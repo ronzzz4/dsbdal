@@ -1,0 +1,62 @@
+Creating:
+  Create database mydb2;
+  Use mydb2;
+
+  Create table flight(fno int, year int, delay float, dest varchar(10);
+
+Alter:
+  Alter table flight rename to air_flight;
+  Alter table air_flight add columns(source varchar(10));
+
+Drop:
+  Drop table flight;
+
+Show diff attributes from the table:
+  desc air_flight;
+
+Create table to import data from a text file:
+  create table flight(fno int, source varchar(10), dest varchar (10), year int, delay float)
+  > row format delimited
+  > fields terminated by ‘,’
+  > lines terminated by ‘\n’
+  > stored as textfile;
+
+Insert value:
+  insert into flight values(1001, “pune”, “mumbai”, 2003, 30.9);
+
+Check content of table:
+  select * from flight;
+
+Create textfile with data:
+  In new terminal – gedit file.txt
+  Enter records – 102,”pune”,”mumbai”,2004,30.9
+  104,”pune”,”ad”,2004,32.9
+
+  pwd (/home/cloudera)
+  ls
+  
+  In hive terminal –
+  load data local inpath “file.txt”
+  > overwrite into table flight;
+  
+  Check entered data – select * from flight;
+
+Join:
+  Create another table:
+  create table new_flight(fno int, year int, source varchar(10))
+  > row format delimited
+  > fields terminated by “,”
+  > lines terminated by “\n”
+  > stored as textfile;
+
+  Insert data into created table:
+  insert into new_flight values(2001, 2024, “pune”);
+  select a.fno, a.year, a.dest, a.delay, b.source
+  > from flight a join new_flight b
+  > on(a.fno=b.fno);
+
+Index:
+  create index flight_index on table flight(fno)
+  > as ‘org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler’
+  > WITH DEFERRED REBUILD;
+  show tables;
